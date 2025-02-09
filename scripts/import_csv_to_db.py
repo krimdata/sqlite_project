@@ -2,7 +2,7 @@ import sqlite3
 import csv
 
 # Connexion à la base de données SQLite
-conn = sqlite3.connect('my_database.db')
+conn = sqlite3.connect('database/my_database.db')
 cursor = conn.cursor()
 
 # Création des tables si elles n'existent pas
