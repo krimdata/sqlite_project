@@ -1,0 +1,40 @@
+name: CI/CD Pipeline for SQLite DB
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python environment
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install sqlite3
+
+      - name: Import CSV data to SQLite
+        run: |
+          python scripts/import_csv_to_db.py  # Exécution du script pour importer les données CSV
+
+      - name: Run SQL queries from queries.sql
+        run: |
+          python scripts/run_queries.py  # Exécution du script qui exécute les requêtes SQL
+
+      - name: Commit and push database backup (optional)
+        run: |
+          git add backups/*
+          git commit -m "Sauvegarde de la base de données après mise à jour"
+          git push
