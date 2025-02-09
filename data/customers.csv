@@ -1,6 +1,5 @@
-id,name,email
-1,John Doe,john.doe@example.com
-2,Jane Smith,jane.smith@example.com
-3,Michael Johnson,michael.johnson@example.com
-4,Emily Davis,emily.davis@example.com
-5,Chris Lee,chris.lee@example.com
+name,email
+Alice Dupont,alice@example.com
+Bob Martin,bob@example.com
+Charlie Durand,charlie@example.com
+

@@ -1,28 +1,28 @@
 import sqlite3
 import csv
 
-# Connexion à la base de données SQLite
 db_path = "database/my_database.db"
 conn = sqlite3.connect(db_path)
 cursor = conn.cursor()
 
-# Fonction pour importer un fichier CSV dans une table
 def import_csv(file_path, table_name, columns):
-    with open(file_path, 'r', encoding='utf-8') as file:
-        reader = csv.reader(file)
-        next(reader)  # Ignorer l'en-tête
+    # columns doit être une chaîne de colonnes séparées par une virgule, par exemple "name, email"
+    with open(file_path, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
         for row in reader:
-            placeholders = ', '.join(['?'] * len(row))
+            cols = [col.strip() for col in columns.split(',')]
+            values = [row[col] for col in cols]
+            placeholders = ', '.join(['?'] * len(values))
             query = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
-            cursor.execute(query, row)
+            cursor.execute(query, values)
+        conn.commit()
 
-# Importation des fichiers CSV
-import_csv('data/customers.csv', 'customers', 'id,name, email')
-import_csv('data/orders.csv', 'orders', 'id,customer_id,total_amount')
+# Importer les données pour chaque table
+import_csv("data/products.csv", "products", "name, description, price, stock")
+import_csv("data/customers.csv", "customers", "name, email")
+import_csv("data/orders.csv", "orders", "customer_id, product_id, quantity, date")
 
-print("✅ Données importées avec succès !")
-
-# Valider et fermer la connexion
-conn.commit()
 conn.close()
+print("✅ CSV data imported successfully!")
+
 
