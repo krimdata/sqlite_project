@@ -1,7 +1,7 @@
 import sqlite3
 
 # Connexion à la base de données SQLite
-conn = sqlite3.connect('orders.db')
+conn = sqlite3.connect('my_database.db')
 cursor = conn.cursor()
 
 # Fonction pour exécuter les requêtes SQL depuis un fichier
