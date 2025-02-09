@@ -1,51 +1,24 @@
 import sqlite3
 
-# Connexion à la base de données SQLite
-conn = sqlite3.connect('my_database.db')
+db_path = "database/my_database.db"
+conn = sqlite3.connect(db_path)
 cursor = conn.cursor()
 
-# Fonction pour exécuter les requêtes SQL depuis un fichier
-def execute_sql_from_file(file_path):
-    with open(file_path, 'r') as file:
-        sql_queries = file.read()
-        cursor.executescript(sql_queries)  # Exécute plusieurs requêtes SQL à partir du fichier
-        conn.commit()
+# Lire le fichier queries.sql
+with open("queries/queries.sql", "r", encoding="utf-8") as f:
+    sql_script = f.read()
 
-# Exécution des requêtes SQL à partir du fichier
-execute_sql_from_file('queries/queries.sql')
+# Séparer les requêtes (chaque requête se termine par un point-virgule)
+queries = [q.strip() for q in sql_script.split(";") if q.strip()]
 
-# Affichage des résultats pour chaque requête
-cursor.execute('SELECT SUM(total_amount) FROM orders')
-print("Total des ventes:", cursor.fetchone()[0])
+for query in queries:
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+        print("Query:", query)
+        print("Result:", result)
+    except Exception as e:
+        print("Error executing query:", query)
+        print(e)
 
-cursor.execute('SELECT AVG(total_amount) FROM orders')
-print("Moyenne des montants des commandes:", cursor.fetchone()[0])
-
-cursor.execute('''
-    SELECT customers.name, COUNT(orders.id) AS order_count
-    FROM customers
-    JOIN orders ON customers.id = orders.customer_id
-    GROUP BY customers.id
-''')
-for row in cursor.fetchall():
-    print(f'{row[0]}: {row[1]} commandes')
-
-cursor.execute('''
-    SELECT order_tracking.status, COUNT(order_tracking.order_id) AS order_status_count
-    FROM order_tracking
-    GROUP BY order_tracking.status
-''')
-for row in cursor.fetchall():
-    print(f'{row[0]}: {row[1]} commandes')
-
-cursor.execute('''
-    SELECT products.name, SUM(orders.total_amount) AS product_sales
-    FROM orders
-    JOIN products ON orders.id = products.id
-    GROUP BY products.id
-''')
-for row in cursor.fetchall():
-    print(f'{row[0]}: {row[1]} ventes')
-
-# Fermeture de la connexion à la base de données
 conn.close()

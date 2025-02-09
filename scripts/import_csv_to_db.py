@@ -1,49 +1,28 @@
 import sqlite3
 import csv
 
-# Connexion à la base de données SQLite
-conn = sqlite3.connect('my_database.db')
+db_path = "database/my_database.db"
+conn = sqlite3.connect(db_path)
 cursor = conn.cursor()
 
-# Création des tables si elles n'existent pas
-cursor.execute('''
-CREATE TABLE IF NOT EXISTS customers (
-    id INTEGER PRIMARY KEY,
-    name TEXT,
-    email TEXT
-)
-''')
+def import_csv(file_path, table_name, columns):
+    # columns doit être une chaîne de colonnes séparées par une virgule, par exemple "name, email"
+    with open(file_path, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            cols = [col.strip() for col in columns.split(',')]
+            values = [row[col] for col in cols]
+            placeholders = ', '.join(['?'] * len(values))
+            query = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
+            cursor.execute(query, values)
+        conn.commit()
 
-cursor.execute('''
-CREATE TABLE IF NOT EXISTS products (
-    id INTEGER PRIMARY KEY,
-    name TEXT,
-    description TEXT,
-    price REAL
-)
-''')
+# Importer les données pour chaque table
+import_csv("data/products.csv", "products", "name, description, price, stock")
+import_csv("data/customers.csv", "customers", "name, email")
+import_csv("data/orders.csv", "orders", "customer_id, product_id, quantity, date")
 
-cursor.execute('''
-CREATE TABLE IF NOT EXISTS orders (
-    id INTEGER PRIMARY KEY,
-    customer_id INTEGER,
-    order_date TEXT,
-    total_amount REAL,
-    FOREIGN KEY(customer_id) REFERENCES customers(id)
-)
-''')
-
-cursor.execute('''
-CREATE TABLE IF NOT EXISTS order_tracking (
-    order_id INTEGER,
-    status TEXT,
-    timestamp TEXT,
-    FOREIGN KEY(order_id) REFERENCES orders(id)
-)
-''')
-
-# Validation et fermeture de la connexion
-conn.commit()
 conn.close()
+print("✅ CSV data imported successfully!")
 
-print("Les tables ont été créées avec succès.")
+

@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout the repository
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
       - name: Set up Python environment
@@ -27,19 +27,17 @@ jobs:
       - name: Ensure database folder exists
         run: mkdir -p database/
 
-      - name: Create SQLite Database
-        run: |
-          sqlite3 database/my_database.db ".databases"  # Cette commande assure que la base est bien créée
+      - name: Create Database and Tables
+        run: python scripts/create_database.py
 
-      - name: Import CSV data to SQLite
-        run: python scripts/import_csv_to_db.py  # Exécute le script d'importation des données
+      - name: Import CSV Data into SQLite
+        run: python scripts/import_csv_to_db.py
 
-      - name: Run SQL queries from queries.sql
-        run: python scripts/run_queries.py  # Exécute les requêtes SQL (KPI, indicateurs, etc.)
+      - name: Run SQL Queries for KPIs
+        run: python scripts/run_queries.py
 
-      - name: Check if database exists before upload
-        run: |
-          if [ ! -f database/my_database.db ]; then echo "❌ Database does not exist"; exit 1; fi
+      - name: Verify Database Tables
+        run: sqlite3 database/my_database.db ".tables"
 
       - name: Upload Database as Artifact
         uses: actions/upload-artifact@v4
@@ -47,4 +45,5 @@ jobs:
           name: sqlite-database
           path: database/my_database.db
           retention-days: 7
+
 
