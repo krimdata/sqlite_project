@@ -33,8 +33,4 @@ jobs:
         run: |
           python scripts/run_queries.py  # Exécution du script qui exécute les requêtes SQL
 
-      - name: Commit and push database backup (optional)
-        run: |
-          git add backups/*
-          git commit -m "Sauvegarde de la base de données après mise à jour"
-          git push
+    
