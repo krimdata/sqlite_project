@@ -25,17 +25,16 @@ jobs:
         run: mkdir -p database/
 
       - name: Create SQLite Database and Tables
-        run: python scripts/create_database.py  # Ce script doit créer la base et les tables
+        run: python scripts/create_database.py  # 🔹 Création de la base et des tables
 
       - name: Import CSV data to SQLite
-        run: python scripts/import_csv_to_db.py  # Ce script doit insérer les données
+        run: python scripts/import_csv_to_db.py  # 🔹 Import des données CSV
 
       - name: Run SQL queries for KPIs
-        run: python scripts/run_queries.py  # Exécute les requêtes KPI
+        run: python scripts/run_queries.py  # 🔹 Exécution des requêtes KPI
 
       - name: Verify Database Tables
-        run: |
-          sqlite3 database/my_database.db ".tables"  # Vérifie que les tables existent
+        run: sqlite3 database/my_database.db ".tables"  # 🔍 Vérification des tables
 
       - name: Upload Database as Artifact
         uses: actions/upload-artifact@v4
