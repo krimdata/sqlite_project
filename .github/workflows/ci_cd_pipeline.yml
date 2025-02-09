@@ -25,12 +25,20 @@ jobs:
         run: |
           sqlite3 --version
 
+      - name: Ensure database folder exists
+        run: mkdir -p database/  # Création du dossier pour stocker la base de données
+
       - name: Import CSV data to SQLite
         run: |
           python scripts/import_csv_to_db.py  # Exécution du script pour importer les données CSV
 
       - name: Run SQL queries from queries.sql
         run: |
-          python scripts/run_queries.py  # Exécution du script qui exécute les requêtes SQL
+          python scripts/run_queries.py  # Exécution du script qui exécute les requêtes SQL des KPI
 
-    
+      - name: Upload Database as Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: sqlite-database
+          path: database/my_database.db  # Upload de la base de données après traitement
+          retention-days: 7
