@@ -22,23 +22,29 @@ jobs:
           python-version: '3.x'
 
       - name: Check SQLite version
-        run: |
-          sqlite3 --version
+        run: sqlite3 --version
 
       - name: Ensure database folder exists
-        run: mkdir -p database/  # Création du dossier pour stocker la base de données
+        run: mkdir -p database/
+
+      - name: Create SQLite Database
+        run: |
+          sqlite3 database/my_database.db ".databases"  # Cette commande assure que la base est bien créée
 
       - name: Import CSV data to SQLite
-        run: |
-          python scripts/import_csv_to_db.py  # Exécution du script pour importer les données CSV
+        run: python scripts/import_csv_to_db.py  # Exécute le script d'importation des données
 
       - name: Run SQL queries from queries.sql
+        run: python scripts/run_queries.py  # Exécute les requêtes SQL (KPI, indicateurs, etc.)
+
+      - name: Check if database exists before upload
         run: |
-          python scripts/run_queries.py  # Exécution du script qui exécute les requêtes SQL des KPI
+          if [ ! -f database/my_database.db ]; then echo "❌ Database does not exist"; exit 1; fi
 
       - name: Upload Database as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: sqlite-database
-          path: database/my_database.db  # Upload de la base de données après traitement
+          path: database/my_database.db
           retention-days: 7
+
