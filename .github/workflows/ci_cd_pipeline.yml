@@ -37,7 +37,7 @@ jobs:
           python scripts/run_queries.py  # Exécution du script qui exécute les requêtes SQL des KPI
 
       - name: Upload Database as Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: sqlite-database
           path: database/my_database.db  # Upload de la base de données après traitement
