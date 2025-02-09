@@ -17,8 +17,8 @@ def import_csv(file_path, table_name, columns):
             cursor.execute(query, row)
 
 # Importation des fichiers CSV
-import_csv('data/customers.csv', 'customers', 'name, email')
-import_csv('data/orders.csv', 'orders', 'customer_id, amount, date')
+import_csv('data/customers.csv', 'customers', 'id,name, email')
+import_csv('data/orders.csv', 'orders', 'id,customer_id, amount, date')
 
 print("✅ Données importées avec succès !")
 
