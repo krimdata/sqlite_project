@@ -21,9 +21,9 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install dependencies
+      - name: Check SQLite version
         run: |
-          pip install sqlite3
+          sqlite3 --version
 
       - name: Import CSV data to SQLite
         run: |
