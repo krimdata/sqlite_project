@@ -39,4 +39,4 @@ cursor.executescript(tables_sql)
 conn.commit()
 conn.close()
 
-print("✅ Database and tables created successfully!")
+print("✅ Database and tables created successfully! yesss")

@@ -17,12 +17,13 @@ def import_csv(file_path, table_name, columns):
             cursor.execute(query, values)
         conn.commit()
 
-# Importer les données pour chaque table ok
+# Importer les données pour chaque table
 import_csv("data/products.csv", "products", "name, description, price, stock")
 import_csv("data/customers.csv", "customers", "name, email")
 import_csv("data/orders.csv", "orders", "customer_id, product_id, quantity, date")
 
 conn.close()
 print("✅ CSV data imported successfully!")
+
 
 
